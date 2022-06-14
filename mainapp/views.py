@@ -3,7 +3,7 @@ from django.conf import settings
 from django.http import Http404
 from datetime import datetime
 
-from mainapp.models import BlogPost
+from mainapp.models import BlogPost, Tag
 ALL_POSTS = [
  {
     'id':0,
@@ -30,3 +30,10 @@ def index(request):
 def post(request, id):
     post = get_object_or_404(BlogPost, pk=id)
     return render(request, 'mainapp/post.html', {'object': post})
+
+def tag_posts(request, name):
+    name = name.lower()
+    title = "Posts about {}".format(name)
+    tag = get_object_or_404(Tag, name=name)
+    posts = BlogPost.objects.filter(tags=tag)
+    return render(request, 'mainapp/filtered_post_list.html', {'title': title, 'posts': posts})
